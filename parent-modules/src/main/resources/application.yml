@@ -1,0 +1,101 @@
+# 服务器相关
+server:
+  port: 10001
+
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://192.168.111.131:3306/springbootparent?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
+      username: root
+      password: root
+      druid:
+        # 下面为连接池的补充设置，应用到上面所有数据源中
+        # 初始化大小，最小，最大
+        initial-size: 5
+        min-idle: 5
+        max-active: 20
+        # 配置获取连接等待超时的时间
+        max-wait: 60000
+        # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+        time-between-eviction-runs-millis: 60000
+        # 配置一个连接在池中最小生存的时间，单位是毫秒
+        min-evictable-idle-time-millis: 300000
+        validation-query: SELECT 1 FROM DUAL
+        test-while-idle: true
+        test-on-borrow: false
+        test-on-return: false
+        # 打开PSCache，并且指定每个连接上PSCache的大小
+        pool-prepared-statements: true
+        #   配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+        max-pool-prepared-statement-per-connection-size: 20
+        filters: stat,wall
+        use-global-data-source-stat: true
+        # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+        connect-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+  application:
+    name: parent-server
+  redis:
+    host: 192.168.111.131
+    port: 6379
+  mail:
+    host: smtp.qq.com
+    username: 358795815@qq.com
+    password: uuyemjigqlhvbgcj
+    port: 587 # 这个端口根据实际情况配置，一般都是465
+    protocol: smtp # 这里应该是不用改的，我没试过其他的配置
+    test-connection: false
+    default-encoding: UTF-8
+    properties:
+      mail:
+        debug: true
+        smtp:
+          auth: true
+          connectiontimeout: 10000
+          timeout: 10000
+          writetimeout: 10000
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+            port: 587
+          starttls:
+            enable: true
+            required: true
+  select:
+    multipart:
+      max-file-size: 100MB # 最大支持文件大小
+      max-request-size: 100MB # 最大请求大小
+      enabled: true
+
+
+# mybatis
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath*:mapper/*Mapper.xml
+  global-config:
+    db-config:
+      id-type: auto
+
+
+aliyun:
+  end-point: oss-cn-shanghai.aliyuncs.com
+  access-key-id: LTAI5tSFAGrms29r1xwEFtRM
+  access-key-secret: rztMfqxdYlsMUtIoy9bIOSGEKCWQT7
+  access-pre: https://dongxiaojie.oss-cn-shanghai.aliyuncs.com
+  bucket-name: dongxiaojie
+
+fdfs:
+  so-timeout: 1500 # socket 连接时长
+  connect-timeout: 600 # 连接 tracker 服务器超时时长
+  # 这两个是你服务器的 IP 地址，注意 23000 端口也要打开，阿里云服务器记得配置安全组。tracker 要和 stroage 服务进行交流
+  tracker-list: 192.168.111.131:22122
+  web-server-url: 192.168.111.131:8888
+  pool:
+    jmx-enabled: false
+  # 生成缩略图
+  thumb-image:
+    height: 500
+    width: 500
